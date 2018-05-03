@@ -41,7 +41,7 @@ class format_pteweeks_renderer extends format_section_renderer_base {
      * @return string HTML to output.
      */
     protected function start_section_list() {
-        return html_writer::start_tag('ul', array('class' => 'weeks'));
+        return html_writer::start_tag('ul', array('class' => 'pteweeks'));
     }
 
     /**
@@ -81,4 +81,63 @@ class format_pteweeks_renderer extends format_section_renderer_base {
     public function section_title_without_link($section, $course) {
         return $this->render(course_get_format($course)->inplace_editable_render_section_name($section, false));
     }
+
+    protected function section_header($section, $course, $onsectionpage, $sectionreturn=null) {
+        global $PAGE;
+
+        $o = '';
+        $currenttext = '';
+        $sectionstyle = '';
+
+        if ($section->section != 0) {
+            // Only in the non-general sections.
+            if (!$section->visible) {
+                $sectionstyle = ' hidden';
+            }
+            if (course_get_format($course)->is_section_current($section)) {
+                $sectionstyle = ' current';
+            }
+        }
+
+        $o.= html_writer::start_tag('div', array('id' => 'section-'.$section->section,
+            'class' => 'section main clearfix'.$sectionstyle, 'role'=>'region',
+            'aria-label'=> get_section_name($course, $section)));
+
+        // Create a span that contains the section title to be used to create the keyboard section move menu.
+        $o .= html_writer::tag('span', get_section_name($course, $section), array('class' => 'hidden sectionname'));
+
+        $leftcontent = $this->section_left_content($section, $course, $onsectionpage);
+        $o.= html_writer::tag('div', $leftcontent, array('class' => 'left side'));
+
+        $rightcontent = $this->section_right_content($section, $course, $onsectionpage);
+        $o.= html_writer::tag('div', $rightcontent, array('class' => 'right side'));
+        $o.= html_writer::start_tag('div', array('class' => 'content'));
+
+        // When not on a section page, we display the section titles except the general section if null
+        $hasnamenotsecpg = (!$onsectionpage && ($section->section != 0 || !is_null($section->name)));
+
+        // When on a section page, we only display the general section title, if title is not the default one
+        $hasnamesecpg = ($onsectionpage && ($section->section == 0 && !is_null($section->name)));
+
+        $classes = ' accesshide';
+        if ($hasnamenotsecpg || $hasnamesecpg) {
+            $classes = '';
+        }
+        $sectionname = html_writer::tag('span', $this->section_title($section, $course));
+        $o.= $this->output->heading($sectionname, 3, 'sectionname' . $classes);
+
+        $o .= $this->section_availability($section);
+
+        $o .= html_writer::start_tag('div', array('class' => 'summary'));
+        $o .= $this->format_summary_text($section);
+        $o .= html_writer::end_tag('div');
+
+        return $o;            
+    }
+        
+    protected function section_footer() {
+        $o = html_writer::end_tag('div');
+        $o.= html_writer::end_tag('div');
+        return $o;
+    }    
 }

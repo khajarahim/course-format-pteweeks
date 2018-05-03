@@ -534,7 +534,7 @@ class format_pteweeks extends format_base {
                    AND fo.name = :optionname
                    AND fo.sectionid = 0";
         $course = $DB->get_record_sql($sql,
-            ['optionname' => 'automaticenddate', 'format' => 'weeks', 'courseid' => $courseid]);
+            ['optionname' => 'automaticenddate', 'format' => 'pteweeks', 'courseid' => $courseid]);
 
         if (!$course) {
             // Looks like it is a course in a different format, nothing to do here.
@@ -542,7 +542,7 @@ class format_pteweeks extends format_base {
         }
 
         // Create an instance of this class and mock the course object.
-        $format = new format_pteweeks('weeks', $courseid);
+        $format = new format_pteweeks('pteweeks', $courseid);
         $format->course = $course;
 
         // If automaticenddate is not specified take the default value.
@@ -581,7 +581,7 @@ function format_pteweeks_inplace_editable($itemtype, $itemid, $newvalue) {
     if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
         $section = $DB->get_record_sql(
             'SELECT s.* FROM {course_sections} s JOIN {course} c ON s.course = c.id WHERE s.id = ? AND c.format = ?',
-            array($itemid, 'weeks'), MUST_EXIST);
+            array($itemid, 'pteweeks'), MUST_EXIST);
         return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
 }
