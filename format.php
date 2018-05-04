@@ -50,3 +50,4 @@ if (!empty($displaysection)) {
 }
 
 $PAGE->requires->js('/course/format/pteweeks/format.js');
+$PAGE->requires->js_call_amd('format_pteweeks/viewactivity','init');

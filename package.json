@@ -1,0 +1,12 @@
+{
+  "name": "moodle-format_pteweeks",
+  "devDependencies": {
+    "grunt": "^1.0.2",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-less": "^1.4.1",
+    "grunt-contrib-uglify": "^3.3.0",
+    "grunt-contrib-watch": "^1.0.1",
+    "grunt-load-gruntfile": "0.0.2"
+  }
+}
